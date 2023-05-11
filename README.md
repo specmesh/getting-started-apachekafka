@@ -33,7 +33,7 @@ This will start Zookeeper on the default port (2181)
 ./bin/kafka-server-start.sh ./config/server.properties
 
  ```
-The broker will be available on `localhost:9092`
+The broker will be available on `localhost:9092` except we want to use the host ip address so the docker command can access it. `10.0.0.23:9092`
 
 # Steps
 
