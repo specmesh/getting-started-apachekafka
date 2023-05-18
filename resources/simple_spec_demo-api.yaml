@@ -61,7 +61,7 @@ channels:
         schemaFormat: "application/json;version=1.9.0"
         contentType: "application/json"
         payload:
-          $ref: "/schema/simple.schema_demo._public.user_checkout.yml"
+          $ref: "/schema/simple.schema_demo._private.user_checkout.yml"
 
 
   _protected/purchased:
