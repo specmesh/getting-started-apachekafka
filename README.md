@@ -1,4 +1,4 @@
-# Getting started guide: Using SpecMesh with Apache Kafka
+# Getting started: SpecMesh with Apache Kafka - No security
 
 # Introduction
 
@@ -6,10 +6,10 @@ This guide provides the simplest way to understand how to get started with SpecM
 
 ## Requirements
 - Access to a Apache Kafka Cluster (without security enabled)
-- A Local docker environment (producers, consumers and the specmesh cli will be executed using docker containers)
+- A local docker environment (producers, consumers and the specmesh cli will be executed using docker containers)
 
 ## Limitations & Prerequisites
-In order to keep it as simple as possible ACLs and Schemas are not used.
+In order to keep it as simple as possible ACLs are not used.
 
 Instructions are provided for bash scripts (mac)
 
@@ -42,7 +42,19 @@ The broker will be available on `localhost:9092` except we want to use the host 
 `https://github.com/specmesh/getting-started-apachekafka.git`
 
 
-## 2. Create or modify a SpecMesh spec file `simple_range_life_enhancer-api.yml`
+## 2. Create or modify a SpecMesh spec file `acme_simple_range_life_enhancer-api.yaml` 
+
+Links: 
+- [resources/acme_simple_range_life_enhancer-api.yaml](resources/acme_simple_range_life_enhancer-api.yaml)
+- Short version [resources/snippet-api.yaml](resources/snippet-api.yaml)
+
+In SpecMesh terms - this file, and what it represents, is considered to be:
+- a data product (data mesh terminology): 
+- streaming api - 
+- a policy, or a contract of shared, private and protected related data that is self governed and available to consumers
+- gitops state capture
+- part of an ecosystem of related dataflow centric apps that are domain centric (each app captures part of the businesses' functionality)
+
 
 See (`resources` and `resources/schema`)
 
@@ -50,10 +62,10 @@ See (`resources` and `resources/schema`)
 asyncapi: '2.5.0'
 id: 'urn:acme.simple_range:life_enhancer'
 info:
-  title: Simple Spec for CLI demo
+  title: ACME Life Enhancer
   version: '1.0.0'
   description: |
-    A bunch of random topics and configs
+   ACMEs Life enhancer records and predicts how ones life will change due to many events that are experienced - see http://acme.org/life_range for more info
   license:
     name: Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0'
@@ -163,12 +175,25 @@ channels:
           $ref: "london.hammersmith.transport._public.tube.passenger.avsc"
 ```
 
-
-### Note:
 This spec will create 3 topics by prepending the id of the app to the 'owned' topics (channels that use a relative path and start with `_private`, `_protected` or `_public`):
 - acme.simple_range.life_enhancer._public.user_signed_up
 - acme.simple_range.life_enhancer._private.user_checkout
 - acme.simple_range.life_enhancer._protected.purchased (notice the tags - only principles `.some.other.domain.root` will be granted access )
+
+When security is enabled only the appropriate principle will be granted access. For example,
+only `acme.simple_range.life_enhancer` principles are
+- granted read-write access to _private topics prefixed with `acme.simple_range.life_enhancer._private`
+- granted read-write access to _protected prefixed with `acme.simple_range.life_enhancer._protected`
+- granted read-write access to _public prefixed with `acme.simple_range.life_enhancer._public`
+
+Note, `_protected` also grants (self-governed) access to other principles where a tag is used. For example
+```yaml
+  _protected/purchased:
+     publish:
+        tags: [
+           name: "grant-access:.some.other.principle"
+        ]
+```
 
 ## 3. Provision the spec  `acme_simple_range_life_enhancer-api.yml`
 
@@ -176,7 +201,7 @@ This spec will create 3 topics by prepending the id of the app to the 'owned' to
  docker run --rm  -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli  provision -bs 10.0.0.23:9092  -sr http://10.0.0.23:8081 -spec /app/acme_simple_range_life_enhancer-api.yaml -schemaPath /app
 ```
 
-SpecMesh will output a substantial amount of status text, is will include sections for topics, ACLs and schemas.
+SpecMesh will output a substantial amount of status text, it will include sections for topics, ACLs and schemas.
 
 
 Truncated Output

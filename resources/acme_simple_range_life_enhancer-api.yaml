@@ -1,10 +1,10 @@
 asyncapi: '2.5.0'
 id: 'urn:acme:simple_range:life_enhancer'
 info:
-  title: Simple Spec for CLI demo
+  title: ACME Life Enhancer
   version: '1.0.0'
   description: |
-    A bunch of random topics and configs
+    ACMEs Life enhancer records and predicts how ones life will change due to many events that are experienced - see http://acme.org/life_range for more info
   license:
     name: Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0'
@@ -79,6 +79,5 @@ channels:
             key:
               type: string
         payload:
-          # client should lookup this schema remotely from the schema registry - it is owned by the publisher
           $ref: "acme.simple_range.transport._public.tube.passenger.avsc"
 
