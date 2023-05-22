@@ -1,0 +1,56 @@
+asyncapi: '2.5.0'
+id: 'urn:acme:simple_range:life_enhancer'
+channels:
+  _public/user_signed_up:
+    bindings:
+      kafka:
+        partitions: 3
+        replicas: 1
+        configs:
+          retention.ms: 999000
+    publish:
+      summary: Inform about signup
+      operationId: onSignup
+      message:
+        payload:
+          $ref: "/schema/acme.simple_range.life_enhancer._public.user_signed_up.avsc"
+  _private/user_checkout:
+    bindings:
+      kafka:
+        partitions: 3
+        replicas: 1
+        configs:
+          cleanup.policy: delete
+          retention.ms: 999000
+
+    publish:
+      summary: User purchase confirmation
+      operationId: onUserCheckout
+      message:
+        bindings:
+          kafka:
+            schemaIdLocation: "payload"
+        schemaFormat: "application/json;version=1.9.0"
+        contentType: "application/json"
+        payload:
+          $ref: "/schema/acme.simple_range.life_enhancer._private.user_checkout.yml"
+
+  /acme/simple_range/transport/_public/tube:
+    subscribe:
+      operationId: onUserArriving
+      summary: Humans arriving in the borough
+      bindings:
+        kafka:
+          groupId: 'acme.simple_range.life_enhancer.new_users'
+      message:
+        schemaFormat: "application/vnd.apache.avro+json;version=1.9.0"
+        contentType: "application/octet-stream"
+        bindings:
+          kafka:
+            schemaIdLocation: "header"
+            key:
+              type: string
+        payload:
+          # client should lookup this schema remotely from the schema registry - it is owned by the publisher
+          $ref: "acme.simple_range.transport._public.tube.passenger.avsc"
+

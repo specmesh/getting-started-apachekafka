@@ -42,13 +42,13 @@ The broker will be available on `localhost:9092` except we want to use the host 
 `https://github.com/specmesh/getting-started-apachekafka.git`
 
 
-## 2. Create or modify a SpecMesh spec file `simple_spec_demo-api.yml`
+## 2. Create or modify a SpecMesh spec file `simple_range_life_enhancer-api.yml`
 
 See (`resources` and `resources/schema`)
 
 ```yaml
 asyncapi: '2.5.0'
-id: 'urn:simple:spec_demo'
+id: 'urn:acme.simple_range:life_enhancer'
 info:
   title: Simple Spec for CLI demo
   version: '1.0.0'
@@ -86,7 +86,7 @@ channels:
         schemaFormat: "application/vnd.apache.avro+json;version=1.9.0"
         contentType: "application/octet-stream"
         payload:
-          $ref: "/schema/simple.schema_demo._public.user_signed_up.avsc"
+          $ref: "/schema/acme.simple_range.life_enhancer._public.user_signed_up.avsc"
 
   _private/user_checkout:
     bindings:
@@ -110,7 +110,7 @@ channels:
         schemaFormat: "application/json;version=1.9.0"
         contentType: "application/json"
         payload:
-          $ref: "/schema/simple.schema_demo._public.user_checkout.yml"
+          $ref: "/schema/acme.simple_range.life_enhancer._public.user_checkout.yml"
 
 
   _protected/purchased:
@@ -166,15 +166,39 @@ channels:
 
 ### Note:
 This spec will create 3 topics by prepending the id of the app to the 'owned' topics (channels that use a relative path and start with `_private`, `_protected` or `_public`):
-- simple.spec_demo._public.user_signed_up
-- simple.spec_demo._private.user_checkout
-- simple.spec_demo._protected.purchased (notice the tags - only principles `.some.other.domain.root` will be granted access )
+- acme.simple_range.life_enhancer._public.user_signed_up
+- acme.simple_range.life_enhancer._private.user_checkout
+- acme.simple_range.life_enhancer._protected.purchased (notice the tags - only principles `.some.other.domain.root` will be granted access )
 
-## 3. Provision the spec  `simple_spec_demo-api.yml`
+## 3. Provision the spec  `acme_simple_range_life_enhancer-api.yml`
 
 ```bash
- docker run --rm  -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli  provision -bs 10.0.0.23:9092  -sr http://10.0.0.23:8081 -spec /app/simple_spec_demo-api.yaml -schemaPath /app
+ docker run --rm  -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli  provision -bs 10.0.0.23:9092  -sr http://10.0.0.23:8081 -spec /app/acme_simple_range_life_enhancer-api.yaml -schemaPath /app
 ```
+
+SpecMesh will output a substantial amount of status text, is will include sections for topics, ACLs and schemas.
+
+
+Truncated Output
+
+```yaml
+{
+   "topics" : [ {
+      "name" : "simple_range.life_enhancer._public.user_signed_up",
+      "state" : "CREATED",
+      "partitions" : 3,
+      "replication" : 1,
+      "config" : {
+         "cleanup.policy" : "delete"
+      },
+      "exception" : null,
+      "messages" : ""
+   }, {
+      "schemas" : null,
+      "acls" : [ {
+```                    
+
+
 > Note: if running Kafka locally, ensure the ip listener address is not `localhost`, otherwise docker cannot establish a connection - a Timeout will occur where it looks like the container process tried to connect to 127.0.0.1/localhost. The broker will return the 'leader' election address as localhost and SpecMesh will fail to connect.
 
 ### 4. Verify the spec topics were created
@@ -188,9 +212,9 @@ Output
 __consumer_offsets
 _schema_encoders
 _schemas
-simple.spec_demo._private.user_checkout
-simple.spec_demo._protected.purchased
-simple.spec_demo._public.user_signed_up
+simple_range.life_enhancer._private.user_checkout
+simple_range.life_enhancer._protected.purchased
+simple_range.life_enhancer._public.user_signed_up
 ```
 
 ### 4. Verify the schemas were published
@@ -199,12 +223,13 @@ curl -X GET http://10.0.0.23:8081/subjects
 ```
 Output
 ```json
-["simple.spec_demo._private.user_checkout-value","simple.spec_demo._public.user_signed_up-value"]
+["acme.simple_range.life_enhancer._private.user_checkout-value",
+   "acme.simple_range.life_enhancer._public.user_signed_up-value"]
 ```
 
 Retrieve a single schema
 ```bash
-curl -X GET http://10.0.0.23:8081/subjects/simple.spec_demo._private.user_checkout-value/versions/latest
+curl -X GET http://10.0.0.23:8081/subjects/acme.simple_range.life_enhancer._private.user_checkout-value/versions/latest
 ```
 
 

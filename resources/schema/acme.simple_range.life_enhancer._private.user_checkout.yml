@@ -3,7 +3,7 @@
   "title":"User Checkout",
   "type":"object",
   "additionalProperties":false,
-  "javaType":"simple.schema_demo._public.user_checkout_value.UserCheckout",
+  "javaType":"acme.simple.schema_demo._public.user_checkout_value.UserCheckout",
   "properties":{
     "id":{
       "type":"integer"

@@ -1,5 +1,5 @@
 asyncapi: '2.5.0'
-id: 'urn:simple:spec_demo'
+id: 'urn:acme:simple_range:life_enhancer'
 info:
   title: Simple Spec for CLI demo
   version: '1.0.0'
@@ -23,9 +23,9 @@ channels:
           - prod
         partitions: 3
         replicas: 1
-        retention: 1
         configs:
           cleanup.policy: delete
+          retention.ms: 999000
 
     publish:
       summary: Inform about signup
@@ -37,7 +37,7 @@ channels:
         schemaFormat: "application/vnd.apache.avro+json;version=1.9.0"
         contentType: "application/octet-stream"
         payload:
-          $ref: "/schema/simple.schema_demo._public.user_signed_up.avsc"
+          $ref: "/schema/acme.simple_range.life_enhancer._public.user_signed_up.avsc"
 
   _private/user_checkout:
     bindings:
@@ -47,9 +47,9 @@ channels:
           - prod
         partitions: 3
         replicas: 1
-        retention: 1
         configs:
           cleanup.policy: delete
+          retention.ms: 999000
 
     publish:
       summary: User purchase confirmation
@@ -61,50 +61,15 @@ channels:
         schemaFormat: "application/json;version=1.9.0"
         contentType: "application/json"
         payload:
-          $ref: "/schema/simple.schema_demo._public.user_checkout.yml"
+          $ref: "/schema/acme.simple_range.life_enhancer._private.user_checkout.yml"
 
-
-  _protected/purchased:
-    bindings:
-      kafka:
-        partitions: 3
-
-    publish:
-      operationId: onUserPurchased
-      summary: Humans purchasing food - note - restricting access to other domain principles
-      tags: [
-        name: "grant-access:.some.other.domain.root"
-      ]
-      message:
-        name: Food Item
-        tags: [
-          name: "human",
-          name: "purchase"
-        ]
-        payload:
-          type: object
-          properties:
-            id:
-              type: integer
-              minimum: 0
-              description: Id of the food
-            cost:
-              type: number
-              minimum: 0
-              description: GBP cost of the food item
-            human_id:
-              type: integer
-              minimum: 0
-              description: Id of the human purchasing the food
-
-  # SUBSCRIBER WILL REQUEST SCHEMA from SR and CodeGen required classes. Header will be used for Id
-  /london/hammersmith/transport/_public/tube:
+  /acme/simple_range/transport/_public/tube:
     subscribe:
       operationId: onUserArriving
       summary: Humans arriving in the borough
       bindings:
         kafka:
-          groupId: 'aConsumerGroupId'
+          groupId: 'acme.simple_range.life_enhancer.new_users'
       message:
         schemaFormat: "application/vnd.apache.avro+json;version=1.9.0"
         contentType: "application/octet-stream"
@@ -115,5 +80,5 @@ channels:
               type: string
         payload:
           # client should lookup this schema remotely from the schema registry - it is owned by the publisher
-          $ref: "london.hammersmith.transport._public.tube.passenger.avsc"
+          $ref: "acme.simple_range.transport._public.tube.passenger.avsc"
 
