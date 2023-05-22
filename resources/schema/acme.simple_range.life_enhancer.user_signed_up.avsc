@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "namespace": "simple.schema_demo._public.user_signed_up_value",
+  "namespace": "acme.simple_range.life_enhancer._public.user_signed_up_value",
   "name": "UserSignedUp",
   "fields": [
     {"name": "fullName", "type": "string"},
