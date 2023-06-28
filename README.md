@@ -2,7 +2,7 @@
 
 # Introduction
 
-This guide provides the simplest way to understand how to get started with SpecMesh (think HelloWorld or Hello SpecMesh!). It will guide you through the process of writing a spec file (also known as a SpecMesh app, or Data Product). You will also learn how to deploy it, write data into the spec topics, and check storage and production metrics
+This guide provides the simplest way to understand how to get started with SpecMesh (think HelloWorld or Hello SpecMesh!). It will guide you through the process of writing a spec file (also known as a SpecMesh app, or Data Product). You will also learn how to provision, write data into the spec topics, and check storage and production metrics
 
 ## Requirements
 - Access to a Apache Kafka Cluster (without security enabled)
@@ -20,20 +20,25 @@ Ensure you have Java installed on your machine (preferably Java 8 or later). You
 
 ## Running a local Kafka Environment (optional)
 
-1. Download Apache Kafka from the [official site](https://kafka.apache.org/downloads): this guide uses  kafka_2.12-3.4.0
-1. Expand it into an appropriate location.
-1. Start ZooKeeper (from the installation directory)
-```bash
-./bin/zookeeper-server-start.sh ./config/zookeeper.properties 
-```
-This will start Zookeeper on the default port (2181)
-4. Start Kafka Server. <br>
-   Open another terminal or command prompt window, navigate to the Kafka directory, and run the following command:
-```bash
-./bin/kafka-server-start.sh ./config/server.properties
+See https://github.com/specmesh/specmesh-build/tree/main/cli#quickstart-using-docker-on-the-local-machine
 
- ```
-The broker will be available on `localhost:9092` except we want to use the host ip address so the docker command can access it. `10.0.0.23:9092`
+Note - the above docker environment uses the `confluent` docker network. Be sure to check the correct network is being used - commands on  this page use `kafka_network`
+
+Login to Github Container Registry
+```bash
+% docker login ghcr.io -u <<username>>
+>> <<token>>
+``` 
+
+Optional - pull the image
+```bash
+% docker pull ghcr.io/specmesh/specmesh-build-cli 
+sing default tag: latest
+latest: Pulling from specmesh/specmesh-build-cli
+128d54f2c9b1: Pull complete 
+<snip>
+``` 
+ 
 
 # Steps
 
@@ -224,8 +229,6 @@ Truncated Output
 ```                    
 
 
-> Note: if running Kafka locally, ensure the ip listener address is not `localhost`, otherwise docker cannot establish a connection - a Timeout will occur where it looks like the container process tried to connect to 127.0.0.1/localhost. The broker will return the 'leader' election address as localhost and SpecMesh will fail to connect.
-
 ### 4. Verify the spec topics were created
 
 ```bash
@@ -255,6 +258,91 @@ Output
 Retrieve a single schema
 ```bash
 curl -X GET http://10.0.0.23:8081/subjects/acme.simple_range.life_enhancer._private.user_checkout-value/versions/latest
+```
+
+
+
+
+## 5. Write data into the public topic
+
+Note: No ACls in this unsecured kafka, docker environment and also no schema enforcement - this is terrible.
+
+```bash
+% docker exec -it kafka /bin/bash -c "/usr/bin/kafka-console-producer --broker-list kafka:9092 --topic acme.simple_range.life_enhancer._public.user_signed_up"
+>user-1
+>user-2
+>user-3
+>user-4
+```
+
+## 6. Check `Storage` metrics for this principle. Chargeback against product owner
+```bash
+ % docker run --rm --network kafka_network -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli storage -bs kafka:9092 -spec /app/acme_simple_range_life_enhancer-api.yaml
+```
+
+```json
+{
+  "acme.simple_range.life_enhancer._private.user_checkout": {
+    "offset-total": 0,
+    "storage": 0
+  },
+  "acme.simple_range.life_enhancer._public.user_signed_up": {
+    "offset-total": 4,
+    "storage": 296
+  }
+}
+```
+## 6. Check `Consumption` metrics against consuming principles. Chargeback against downstream consumers
+
+Run an active consumer - leave it running
+```bash
+ docker exec -it kafka /bin/bash -c "/usr/bin/kafka-console-consumer --group other.domain.processor --bootstrap-server kafka:9092 --topic acme.simple_range.life_enhancer._public.user_signed_up --from-beginning" 
+\ 
+user-1
+user-2
+user-3
+user-4
+```
+
+Check `Consumption` metrics to see that the `other.domain.processor` is consuming events
+
+```bash
+% docker run --rm --network kafka_network -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli consumption -bs kafka:9092 -spec /app/acme_simple_range_life_enhancer-api.yaml
+
+2023-06-28 12:39:21.543 [main] INFO  org.apache.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1687955961529
+{
+  "acme.simple_range.life_enhancer._public.user_signed_up": {
+    "id": "other.domain.processor",
+    "members": [
+      {
+        "id": "console-consumer-ce807758-8129-457e-9bf8-af6e478993f4",
+        "clientId": "console-consumer",
+        "host": "/172.19.0.3",
+        "partitions": [
+          {
+            "id": 0,
+            "topic": "acme.simple_range.life_enhancer._public.user_signed_up",
+            "offset": 4,
+            "timestamp": -1
+          },
+          {
+            "id": 1,
+            "topic": "acme.simple_range.life_enhancer._public.user_signed_up",
+            "offset": 0,
+            "timestamp": -1
+          },
+          {
+            "id": 2,
+            "topic": "acme.simple_range.life_enhancer._public.user_signed_up",
+            "offset": 0,
+            "timestamp": -1
+          }
+        ]
+      }
+    ],
+    "offsetTotal": 4
+  }
+}
 ```
 
 
