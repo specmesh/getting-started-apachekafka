@@ -4,6 +4,8 @@
 
 This guide provides the simplest way to understand how to get started with SpecMesh - think of it as your HelloWorld or Hello SpecMesh! It will guide you through the process of writing a spec file, also known as a SpecMesh app, or a Data Product. You'll learn how to drive SpecMesh using the CLI commands to `provision` your app, write data into the spec topics, and check `storage` and `consumption` metrics for building chargeback.
 
+Read the [CLI page](https://github.com/specmesh/specmesh-build/tree/main/cli) for more details on commands and associated flags
+
 ## Requirements
 - Access to a Apache Kafka Cluster (without security enabled)
 - A local docker environment (producers, consumers and the specmesh cli will be executed using docker containers)
@@ -202,6 +204,8 @@ Note, `_protected` also grants (self-governed) access to other principles where 
 
 ## 3. Provision the spec  `acme_simple_range_life_enhancer-api.yml`
 
+Run the SpecMesh CLI `provision` command via Docker. A `dryRun` flag is also supported.
+
 ```bash
  docker run --rm  -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli  provision -bs 10.0.0.23:9092  -sr http://10.0.0.23:8081 -spec /app/acme_simple_range_life_enhancer-api.yaml -schemaPath /app
 ```
@@ -276,6 +280,9 @@ Note: No ACls in this unsecured kafka, docker environment and also no schema enf
 ```
 
 ## 6. Check `Storage` metrics for this principle. Chargeback against product owner
+
+Run the SpecMesh CLI `storage` command via Docker
+
 ```bash
  % docker run --rm --network kafka_network -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli storage -bs kafka:9092 -spec /app/acme_simple_range_life_enhancer-api.yaml
 ```
@@ -293,6 +300,9 @@ Note: No ACls in this unsecured kafka, docker environment and also no schema enf
 }
 ```
 ## 6. Check `Consumption` metrics against consuming principles. Chargeback against downstream consumers
+
+Run the SpecMesh CLI `consumption` command via Docker
+
 
 Run an active consumer - leave it running
 ```bash
