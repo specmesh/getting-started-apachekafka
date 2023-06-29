@@ -1,4 +1,4 @@
-# Getting started: SpecMesh with Apache Kafka - No security
+# Getting started: SpecMesh with Apache Kafka - No ACL or security
 
 # Introduction
 
