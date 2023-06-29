@@ -2,7 +2,7 @@
 
 # Introduction
 
-This guide provides the simplest way to understand how to get started with SpecMesh (think HelloWorld or Hello SpecMesh!). It will guide you through the process of writing a spec file (also known as a SpecMesh app, or Data Product). You will also learn how to provision, write data into the spec topics, and check storage and production metrics
+This guide provides the simplest way to understand how to get started with SpecMesh - think of it as your HelloWorld or Hello SpecMesh! It will guide you through the process of writing a spec file, also known as a SpecMesh app, or a Data Product. You'll learn how to drive SpecMesh using the CLI commands to `provision` your app, write data into the spec topics, and check `storage` and `consumption` metrics for building chargeback.
 
 ## Requirements
 - Access to a Apache Kafka Cluster (without security enabled)
@@ -54,10 +54,10 @@ Links:
 - Short version [resources/snippet-api.yaml](resources/snippet-api.yaml)
 
 In SpecMesh terms - this file, and what it represents, is considered to be:
-- a data product (data mesh terminology): 
-- streaming api - 
+- a data product (Data Mesh terminology): 
+- streaming api
 - a policy, or a contract of shared, private and protected related data that is self governed and available to consumers
-- gitops state capture
+- gitops state capture (as part of a git workflow)
 - part of an ecosystem of related dataflow centric apps that are domain centric (each app captures part of the businesses' functionality)
 
 
