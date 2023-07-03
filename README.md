@@ -3,7 +3,9 @@
 
 # Introduction
 
-This guide provides the simplest way to understand how to get started with SpecMesh - think of it as your HelloWorld or Hello SpecMesh! It will guide you through the process of writing a spec file, also known as a SpecMesh app, or a Data Product. You'll learn how to drive SpecMesh using the CLI commands to `provision` your app, write data into the spec topics, and check `storage` and `consumption` metrics for building chargeback.
+This guide provides the simplest way to understand how to get started with SpecMesh - think of it as your HelloWorld or Hello SpecMesh! It will guide you through the process of writing a SpecMesh compliant AsyncAPI spec for your 'product'. We also call this as a SpecMesh app, or a Data Product - it provides a data model your topic structure, permissions and ownership. 
+
+You'll learn how to drive SpecMesh using the CLI commands to `provision` your app, write data into the SpecMesh created topics, and check `storage` and `consumption` metrics for building chargeback.
 
 Read the [CLI page](https://github.com/specmesh/specmesh-build/tree/main/cli) for more details on commands and associated flags.
 
