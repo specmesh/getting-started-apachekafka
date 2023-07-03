@@ -25,7 +25,7 @@ Ensure you have Java installed on your machine (preferably Java 8 or later). You
 
 See https://github.com/specmesh/specmesh-build/tree/main/cli#quickstart-using-docker-on-the-local-machine
 
-Note - the above docker environment uses the `confluent` docker network. Be sure to check the correct network is being used - commands on  this page use `kafka_network`
+Note - the docker environment uses the `kafka_network`
 
 Login to Github Container Registry
 ```bash
