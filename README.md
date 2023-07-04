@@ -59,7 +59,7 @@ Links:
 - Short version [resources/snippet-api.yaml](resources/snippet-api.yaml)
 
 In SpecMesh terms - this file, and what it represents, is considered to be:
-- a data product (Data Mesh terminology): 
+- a data product (Data Mesh terminology)
 - streaming api
 - a policy, or a contract of shared, private and protected related data that is self governed and available to consumers
 - gitops state capture (as part of a git workflow)
