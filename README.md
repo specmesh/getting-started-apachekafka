@@ -21,52 +21,37 @@ Instructions are provided for bash scripts (mac)
 Ensure you have Java installed on your machine (preferably Java 8 or later). You can check this by running java -version in your command prompt or terminal.
 
 
-# 1. Installation & setup
+Installation & setup
 
-## Running a local Kafka Environment (optional)
+## 1. Running a local Kafka Environment (optional)
 
-See https://github.com/specmesh/specmesh-build/tree/main/cli#quickstart-using-docker-on-the-local-machine
+To run a local Docker based Kafka environment, run through the steps documented in the 
+[CLI quickstart](https://github.com/specmesh/specmesh-build/tree/main/cli#quickstart-using-docker-on-the-local-machine).
 
 Note - the docker environment uses the `kafka_network`
 
-Login to Github Container Registry
-```bash
-% docker login ghcr.io -u <<username>>
->> <<token>>
-``` 
+## 2. Pull the CLI image (optional)
 
-Optional - pull the image
-```bash
-% docker pull ghcr.io/specmesh/specmesh-build-cli 
-sing default tag: latest
-latest: Pulling from specmesh/specmesh-build-cli
-128d54f2c9b1: Pull complete 
-<snip>
-``` 
- 
+> docker pull ghcr.io/specmesh/specmesh-build-cli 
 
 # Steps
 
 ## 1. Checkout this repository
 
-`https://github.com/specmesh/getting-started-apachekafka.git`
+Checkout a local copy of this quickstart repository, e.g. using either over http
 
+> git clone https://github.com/specmesh/getting-started-apachekafka.git
 
-## 2. Create or modify a SpecMesh spec file `acme_simple_range_life_enhancer-api.yaml` 
+or over ssh
 
-Links: 
-- [resources/acme_simple_range_life_enhancer-api.yaml](resources/acme_simple_range_life_enhancer-api.yaml)
-- Short version [resources/snippet-api.yaml](resources/snippet-api.yaml)
+> git clone git@github.com:specmesh/getting-started-apachekafka.git
 
-In SpecMesh terms - this file, and what it represents, is considered to be:
-- a data product (Data Mesh terminology)
-- streaming api
-- a policy, or a contract of shared, private and protected related data that is self governed and available to consumers
-- gitops state capture (as part of a git workflow)
-- part of an ecosystem of related dataflow centric apps that are domain centric (each app captures part of the businesses' functionality)
+## 2. View the SpecMesh spec file
 
+The repository contains a spec file in [resources/acme_simple_range_life_enhancer-api.yaml](resources/acme_simple_range_life_enhancer-api.yaml).
+The schemas referenced in this spec can be found in the [resources/schema](resources/schema) directory.
 
-See (`resources` and `resources/schema`)
+The spec is included here for convenience:
 
 ```yaml
 asyncapi: '2.5.0'
@@ -185,25 +170,21 @@ channels:
           $ref: "london.hammersmith.transport._public.tube.passenger.avsc"
 ```
 
-This spec will create 3 topics by prepending the id of the app to the 'owned' topics (channels that use a relative path and start with `_private`, `_protected` or `_public`):
+In SpecMesh terms - this file, and what it represents, is considered to be:
+- a data product (Data Mesh terminology)
+- streaming api
+- a policy, or a contract of shared, private and protected related data that is self governed and available to consumers
+- gitops state capture (as part of a git workflow)
+- part of an ecosystem of related dataflow centric apps that are domain centric (each app captures part of the businesses' functionality)
+
+The spec defines 4 topics. Topics are defined under the `channels` section. 
+The spec defines 3 Topics that are _owned_ by this app. 
+Topics that start with `_private`, `_protected` or `_public` are _owned_ topics. The actual topic names will be prefixed with / namespaced under the app's `id`:
 - acme.simple_range.life_enhancer._public.user_signed_up
 - acme.simple_range.life_enhancer._private.user_checkout
 - acme.simple_range.life_enhancer._protected.purchased (notice the tags - only principles `.some.other.domain.root` will be granted access )
-
-When security is enabled only the appropriate principle will be granted access. For example,
-only `acme.simple_range.life_enhancer` principles are
-- granted read-write access to _private topics prefixed with `acme.simple_range.life_enhancer._private`
-- granted read-write access to _protected prefixed with `acme.simple_range.life_enhancer._protected`
-- granted read-write access to _public prefixed with `acme.simple_range.life_enhancer._public`
-
-Note, `_protected` also grants (self-governed) access to other principles where a tag is used. For example
-```yaml
-  _protected/purchased:
-     publish:
-        tags: [
-           name: "grant-access:.some.other.principle"
-        ]
-```
+The spec references 1 topic that is _owned_ by another app. Topics owned by another app use a fully qualified name:
+- /london/hammersmith/transport/_public/tube
 
 ## 3. Provision the spec  `acme_simple_range_life_enhancer-api.yml`
 
