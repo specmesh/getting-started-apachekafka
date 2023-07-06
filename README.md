@@ -210,7 +210,7 @@ Note, `_protected` also grants (self-governed) access to other principles where 
 Run the SpecMesh CLI `provision` command via Docker. A `dryRun` flag is also supported.
 
 ```bash
- docker run --rm  -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli  provision -bs 10.0.0.23:9092  -sr http://10.0.0.23:8081 -spec /app/acme_simple_range_life_enhancer-api.yaml -schemaPath /app
+docker run -rm --network kafka_network  -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli  provision -bs kafka:9092  -sr http://schema-registry:8081 -spec /app/acme_simple_range_life_enhancer-api.yaml -schemaPath /app
 ```
 
 SpecMesh will output a substantial amount of status text, it will include sections for topics, ACLs and schemas.
@@ -236,10 +236,10 @@ Truncated Output
 ```                    
 
 
-### 4. Verify the spec topics were created
+## 4. Verify the spec topics were created
 
 ```bash
- docker run --rm --name test-listing  -it  confluentinc/cp-kafka:latest  /bin/bash -c "/usr/bin/kafka-topics --list --bootstrap-server 10.0.0.23:9092" 
+ docker run --rm --network kafka_network -it  confluentinc/cp-kafka:latest  /bin/bash -c "/usr/bin/kafka-topics --list --bootstrap-server kafka:9092" 
 ```
 Output
 ```bash
@@ -252,9 +252,9 @@ simple_range.life_enhancer._protected.purchased
 simple_range.life_enhancer._public.user_signed_up
 ```
 
-### 4. Verify the schemas were published
+## 4. Verify the schemas were published
 ```bash
-curl -X GET http://10.0.0.23:8081/subjects
+ docker run --rm --network kafka_network -it confluentinc/cp-kafka:latest curl -X GET http://schema-registry:8081/subjects
 ```
 Output
 ```json
@@ -264,7 +264,7 @@ Output
 
 Retrieve a single schema
 ```bash
-curl -X GET http://10.0.0.23:8081/subjects/acme.simple_range.life_enhancer._private.user_checkout-value/versions/latest
+docker run --rm --network kafka_network -it confluentinc/cp-kafka:latest  curl -X GET http://schema-registry:8081/subjects/acme.simple_range.life_enhancer._private.user_checkout-value/versions/latest
 ```
 
 
@@ -272,7 +272,7 @@ curl -X GET http://10.0.0.23:8081/subjects/acme.simple_range.life_enhancer._priv
 
 ## 5. Write data into the public topic
 
-Note: No ACls in this unsecured kafka, docker environment and also no schema enforcement - this is terrible.
+Note: No ACls in this unsecured kafka, docker environment and also no schema enforcement - this is terrible. Run this command inside the existing `kafka` container.
 
 ```bash
 % docker exec -it kafka /bin/bash -c "/usr/bin/kafka-console-producer --broker-list kafka:9092 --topic acme.simple_range.life_enhancer._public.user_signed_up"
