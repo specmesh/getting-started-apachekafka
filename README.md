@@ -11,7 +11,7 @@ Read the [CLI page](https://github.com/specmesh/specmesh-build/tree/main/cli) fo
 
 ## Requirements
 - Access to a Apache Kafka Cluster (without security enabled)
-- A local docker environment (producers, consumers and the specmesh cli will be executed using docker containers)
+- A local docker environment (producers, consumers and the SpecMesh CLI will be executed using docker containers)
 
 ## Limitations & Prerequisites
 In order to keep it as simple as possible ACLs are not used.
@@ -71,7 +71,7 @@ servers:
     description: Test broker
 
 channels:
-  _public/user_signed_up:
+  _public.user_signed_up:
     bindings:
       kafka:
         envs:
@@ -95,7 +95,7 @@ channels:
         payload:
           $ref: "/schema/acme.simple_range.life_enhancer._public.user_signed_up.avsc"
 
-  _private/user_checkout:
+  _private.user_checkout:
     bindings:
       kafka:
         envs:
@@ -120,7 +120,7 @@ channels:
           $ref: "/schema/acme.simple_range.life_enhancer._public.user_checkout.yml"
 
 
-  _protected/purchased:
+  _protected.purchased:
     bindings:
       kafka:
         partitions: 3
@@ -151,7 +151,7 @@ channels:
               type: integer
               minimum: 0
               description: Id of the human purchasing the food
-    /london/hammersmith/transport/_public/tube:
+    .london.hammersmith.transport._public.tube:
     subscribe:
       summary: Humans arriving in the borough
       bindings:
@@ -171,10 +171,10 @@ channels:
 ```
 
 In SpecMesh terms - this file, and what it represents, is considered to be:
-- a data product (Data Mesh terminology)
-- streaming api
+- a Domain API, may also be thought of as a Data Product for public topics (Data Mesh terminology)
+- streaming API
 - a policy, or a contract of shared, private and protected related data that is self governed and available to consumers
-- gitops state capture (as part of a git workflow)
+- GitOps state capture (as part of a Git workflow)
 - part of an ecosystem of related dataflow centric apps that are domain centric (each app captures part of the businesses' functionality)
 
 The spec defines 4 topics. Topics are defined under the `channels` section. 

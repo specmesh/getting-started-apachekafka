@@ -1,5 +1,5 @@
 asyncapi: '2.5.0'
-id: 'urn:acme:simple_range:life_enhancer'
+id: 'urn:acme.simple_range.life_enhancer'
 info:
   title: ACME Life Enhancer
   version: '1.0.0'
@@ -15,7 +15,7 @@ servers:
     description: Test broker
 
 channels:
-  _public/user_signed_up:
+  _public.user_signed_up:
     bindings:
       kafka:
         envs:
@@ -39,7 +39,7 @@ channels:
         payload:
           $ref: "/schema/acme.simple_range.life_enhancer._public.user_signed_up.avsc"
 
-  _private/user_checkout:
+  _private.user_checkout:
     bindings:
       kafka:
         envs:
@@ -63,7 +63,7 @@ channels:
         payload:
           $ref: "/schema/acme.simple_range.life_enhancer._private.user_checkout.yml"
 
-  /acme/simple_range/transport/_public/tube:
+  .acme.simple_range.transport._public.tube:
     subscribe:
       operationId: onUserArriving
       summary: Humans arriving in the borough
