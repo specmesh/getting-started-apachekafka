@@ -184,7 +184,7 @@ Topics that start with `_private`, `_protected` or `_public` are _owned_ topics.
 - acme.simple_range.life_enhancer._private.user_checkout
 - acme.simple_range.life_enhancer._protected.purchased (notice the tags - only principles `.some.other.domain.root` will be granted access )
 The spec references 1 topic that is _owned_ by another app. Topics owned by another app use a fully qualified name:
-- /london/hammersmith/transport/_public/tube
+- london.hammersmith.transport._public.tube
 
 ## 3. Provision the spec  `acme_simple_range_life_enhancer-api.yml`
 
