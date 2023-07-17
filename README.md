@@ -3,14 +3,14 @@
 
 # Introduction
 
-This guide provides the simplest way to understand how to get started with SpecMesh - think of it as your HelloWorld or Hello SpecMesh! It will guide you through the process of writing a SpecMesh compliant AsyncAPI spec for your 'product'. We also call this as a SpecMesh app, or a Data Product - it provides a data model your topic structure, permissions and ownership. 
+This guide provides the simplest way to understand how to get started with SpecMesh - think of it as your HelloWorld or Hello SpecMesh! It will guide you through the process of writing a SpecMesh compliant AsyncAPI spec for your 'product'. We also call this a SpecMesh app, or a Data Product - it provides a data model of your topic structure, permissions and ownership. 
 
 You'll learn how to drive SpecMesh using the CLI commands to `provision` your app, write data into the SpecMesh created topics, and check `storage` and `consumption` metrics for building chargeback.
 
 Read the [CLI page](https://github.com/specmesh/specmesh-build/tree/main/cli) for more details on commands and associated flags.
 
 ## Requirements
-- Access to a Apache Kafka Cluster (without security enabled)
+- Access to an Apache Kafka Cluster (without security enabled)
 - A local docker environment (producers, consumers and the SpecMesh CLI will be executed using docker containers)
 
 ## Limitations & Prerequisites
@@ -55,12 +55,12 @@ The spec is included here for convenience:
 
 ```yaml
 asyncapi: '2.5.0'
-id: 'urn:acme.simple_range:life_enhancer'
+id: 'urn:acme.simple_range.life_enhancer'
 info:
   title: ACME Life Enhancer
   version: '1.0.0'
   description: |
-   ACMEs Life enhancer records and predicts how ones life will change due to many events that are experienced - see http://acme.org/life_range for more info
+   ACMEs Life enhancer records and predicts how one's life will change due to many events that are experienced - see http://acme.org/life_range for more info
   license:
     name: Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0'
@@ -151,7 +151,7 @@ channels:
               type: integer
               minimum: 0
               description: Id of the human purchasing the food
-    .london.hammersmith.transport._public.tube:
+    london.hammersmith.transport._public.tube:
     subscribe:
       summary: Humans arriving in the borough
       bindings:
@@ -170,12 +170,12 @@ channels:
           $ref: "london.hammersmith.transport._public.tube.passenger.avsc"
 ```
 
-In SpecMesh terms - this file, and what it represents, is considered to be:
+In SpecMesh terms - this file, and what it represents, are considered to be:
 - a Domain API, may also be thought of as a Data Product for public topics (Data Mesh terminology)
 - streaming API
-- a policy, or a contract of shared, private and protected related data that is self governed and available to consumers
+- a policy, or a contract of shared, private and protected related data that is self-governed and available to consumers
 - GitOps state capture (as part of a Git workflow)
-- part of an ecosystem of related dataflow centric apps that are domain centric (each app captures part of the businesses' functionality)
+- part of an ecosystem of related dataflow-centric apps that are domain-centric (each app captures part of the businesses' functionality)
 
 The spec defines 4 topics. Topics are defined under the `channels` section. 
 The spec defines 3 Topics that are _owned_ by this app. 
