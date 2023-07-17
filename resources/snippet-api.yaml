@@ -35,7 +35,7 @@ channels:
         payload:
           $ref: "/schema/acme.simple_range.life_enhancer._private.user_checkout.yml"
 
-  .acme.simple_range.transport._public.tube:
+  acme.simple_range.transport._public.tube:
     subscribe:
       operationId: onUserArriving
       summary: Humans arriving in the borough
