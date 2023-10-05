@@ -7,6 +7,10 @@ This guide provides the simplest way to understand how to get started with SpecM
 
 You'll learn how to drive SpecMesh using the CLI commands to `provision` your app, write data into the SpecMesh created topics, and check `storage` and `consumption` metrics for building chargeback.
 
+
+See the Docker Guide for this page: https://github.com/specmesh/specmesh-build/tree/main/cli#quickstart-using-docker-on-the-local-machine
+
+
 Read the [CLI page](https://github.com/specmesh/specmesh-build/tree/main/cli) for more details on commands and associated flags.
 
 ## Requirements
