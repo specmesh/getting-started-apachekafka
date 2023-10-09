@@ -195,7 +195,7 @@ The spec references 1 topic that is _owned_ by another app. Topics owned by anot
 Run the SpecMesh CLI `provision` command via Docker. A `dryRun` flag is also supported.
 
 ```bash
-docker run -rm --network kafka_network  -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli  provision -bs kafka:9092  -sr http://schema-registry:8081 -spec /app/acme_simple_range_life_enhancer-api.yaml -schemaPath /app
+docker run --rm --network kafka_network  -v "$(pwd)/resources:/app" ghcr.io/specmesh/specmesh-build-cli  provision -bs kafka:9092  -sr http://schema-registry:8081 -spec /app/acme_simple_range_life_enhancer-api.yaml -schemaPath /app
 ```
 
 SpecMesh will output a substantial amount of status text, it will include sections for topics, ACLs and schemas.
